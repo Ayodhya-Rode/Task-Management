@@ -18,4 +18,11 @@ router.post("/add-task", verifyToken, taskController.addTask);
  */
 router.get("/get-tasks", verifyToken, taskController.getTasks);
 
+/**
+ * @route PUT /api/tasks/update-task/:id
+ * @desc Update a task
+ * @access Private
+ */
+router.put("/update-task/:id", verifyToken, taskController.updateTask);
+
 export default router;
