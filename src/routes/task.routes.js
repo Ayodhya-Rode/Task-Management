@@ -32,5 +32,11 @@ router.put("/update-task/:id", verifyToken, taskController.updateTask);
  */
 router.delete("/delete-task/:id", verifyToken, taskController.deleteTask);
  
+/**
+ * @route GET /api/tasks/get-task/:id
+ * @desc Get a single task by ID
+ * @access Private
+ */
+router.get("/get-task/:id", verifyToken, taskController.getTaskById);
 
 export default router;

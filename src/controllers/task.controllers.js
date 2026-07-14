@@ -174,4 +174,51 @@ export async function deleteTask(req, res) {
   }
 }
 
+/**
+  * Get a single task by ID
+  * @route GET /api/tasks/get-task/:id
+  * @access Private
+ */
 
+export async function getTaskById(req, res) {
+  try{
+    const { id } = req.params;
+
+    // Validate input
+    if (!mongoose.Types.ObjectId.isValid(id)) {  //check ID is valid MongoDB ObjectId or not
+      return res.status(400).json({
+        error: true,
+        type: "VALIDATION_ERROR",
+        message: "Invalid task ID",
+      });
+    }
+
+    // Find the task by ID and ensure it belongs to logged-in user
+    const task = await taskModel.findOne({
+      _id: id,
+      user: req.user.userId,
+    });
+
+    if (!task) {
+      return res.status(404).json({
+        error: true,
+        type: "TASK_NOT_FOUND",
+        message: "Task not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      type: "TASK_FOUND",
+      message: "Task found successfully",
+      task: task,
+    });
+  }catch(err){
+    console.error("Get Task By ID Error:", err);
+    return res.status(500).json({
+      error: true,
+      type: "INTERNAL_SERVER_ERROR",
+      message: "Internal Server Error",
+    });
+  }
+}
