@@ -1,6 +1,11 @@
 import taskModel from "../models/task.model.js";
 import mongoose from "mongoose";
 
+/**
+  * Create a new task
+  * @route POST /api/tasks/add-task
+  * @access Private
+ */
 export async function addTask(req, res) {
   try {
     const { title, description, status, priority, dueDate } = req.body;
@@ -41,6 +46,12 @@ export async function addTask(req, res) {
   }
 }
 
+/**
+  * Get all tasks for the authenticated user
+  * @route GET /api/tasks/get-tasks
+  * @access Private
+ */
+
 export async function getTasks(req, res) {
   try {
     const tasks = await taskModel
@@ -61,6 +72,12 @@ export async function getTasks(req, res) {
     });
   }
 }
+
+/**
+ * Update a task
+ * @route PUT /api/tasks/update-task/:id
+ * @access Private
+ */
 
 export async function updateTask(req, res) {
   try {
@@ -128,6 +145,11 @@ export async function updateTask(req, res) {
   }
 }
 
+/**
+ * Delete a task
+ * @route DELETE /api/tasks/delete-task/:id
+ * @access Private
+ */
 
 export async function deleteTask(req, res) {
   try{

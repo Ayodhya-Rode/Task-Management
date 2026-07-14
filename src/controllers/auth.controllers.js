@@ -3,6 +3,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 
+/**
+ * Register a new user
+ * @route POST /api/auth/register
+ * @access Public
+ */
+
 export async function registerUser(req, res) {
   try {
     const { fullName, email, password } = req.body;
@@ -67,6 +73,11 @@ export async function registerUser(req, res) {
     });
   }
 }
+/**
+ * Login a user
+ * @route POST /api/auth/login
+ * @access Public
+ */
 
 export async function loginUser(req, res) {
   try {
@@ -135,6 +146,12 @@ export async function loginUser(req, res) {
     });
   }
 }
+
+/**
+ * Logout a user
+ * @route POST /api/auth/logout
+ * @access Private
+ */
 
 export async function logoutUser(req, res) {
   try {
