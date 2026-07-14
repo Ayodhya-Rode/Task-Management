@@ -2,9 +2,9 @@ import taskModel from "../models/task.model.js";
 import mongoose from "mongoose";
 
 /**
-  * Create a new task
-  * @route POST /api/tasks/add-task
-  * @access Private
+ * Create a new task
+ * @route POST /api/tasks/add-task
+ * @access Private
  */
 export async function addTask(req, res) {
   try {
@@ -47,9 +47,9 @@ export async function addTask(req, res) {
 }
 
 /**
-  * Get all tasks for the authenticated user
-  * @route GET /api/tasks/get-tasks
-  * @access Private
+ * Get all tasks for the authenticated user
+ * @route GET /api/tasks/get-tasks
+ * @access Private
  */
 
 export async function getTasks(req, res) {
@@ -152,7 +152,7 @@ export async function updateTask(req, res) {
  */
 
 export async function deleteTask(req, res) {
-  try{
+  try {
     const { id } = req.params;
 
     // Validate input
@@ -186,7 +186,7 @@ export async function deleteTask(req, res) {
       type: "TASK_DELETED",
       message: "Task deleted successfully",
     });
-  }catch (err) {
+  } catch (err) {
     console.error("Delete Task Error:", err);
     return res.status(500).json({
       error: true,
@@ -197,17 +197,18 @@ export async function deleteTask(req, res) {
 }
 
 /**
-  * Get a single task by ID
-  * @route GET /api/tasks/get-task/:id
-  * @access Private
+ * Get a single task by ID
+ * @route GET /api/tasks/get-task/:id
+ * @access Private
  */
 
 export async function getTaskById(req, res) {
-  try{
+  try {
     const { id } = req.params;
 
     // Validate input
-    if (!mongoose.Types.ObjectId.isValid(id)) {  //check ID is valid MongoDB ObjectId or not
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      //check ID is valid MongoDB ObjectId or not
       return res.status(400).json({
         error: true,
         type: "VALIDATION_ERROR",
@@ -235,8 +236,84 @@ export async function getTaskById(req, res) {
       message: "Task found successfully",
       task: task,
     });
-  }catch(err){
+  } catch (err) {
     console.error("Get Task By ID Error:", err);
+    return res.status(500).json({
+      error: true,
+      type: "INTERNAL_SERVER_ERROR",
+      message: "Internal Server Error",
+    });
+  }
+}
+
+/**
+ * Get dashboard data for the authenticated user
+ * @route GET /api/tasks/dashboard
+ * @access Private
+ */
+
+export async function getDashboard(req, res) {
+  try {
+    const userId = req.user.userId;
+
+    // Fetch ALL tasks for the user
+    const totalTasks = await taskModel.countDocuments({
+      user: userId 
+    });
+
+    // Fetch all COMPLETED tasks
+    const completedTasks = await taskModel.countDocuments({
+      user: userId,
+      status: "completed",
+    });
+
+    // Fetch all PENDING tasks
+    const pendingTasks = await taskModel.countDocuments({
+      user: userId,
+      status: "pending",
+    });
+
+    // Fetch all IN-PROGRESS tasks
+    const inProgressTasks = await taskModel.countDocuments({
+      user: userId,
+      status: "in-progress",
+    });
+
+    // Count low priority tasks
+    const lowPriorityTasks = await taskModel.countDocuments({
+      user: userId,
+      priority: "low",
+    });
+
+    // Count medium priority tasks
+    const mediumPriorityTasks = await taskModel.countDocuments({
+      user: userId,
+      priority: "medium",
+    });
+
+    // Count high priority tasks
+    const highPriorityTasks = await taskModel.countDocuments({
+      user: userId,
+      priority: "high",
+    });
+
+    return res.status(200).json({
+      success: true,
+      type: "DASHBOARD_FETCHED",
+      message: "Dashboard data fetched successfully",
+      dashboard: {
+        totalTasks,
+        completedTasks,
+        pendingTasks,
+        inProgressTasks,
+        lowPriorityTasks,
+        mediumPriorityTasks,
+        highPriorityTasks,
+      }
+    })
+
+  } catch (err) {
+    console.error("Get Dashboard Error:", err);
     return res.status(500).json({
       error: true,
       type: "INTERNAL_SERVER_ERROR",

@@ -39,4 +39,11 @@ router.delete("/delete-task/:id", verifyToken, taskController.deleteTask);
  */
 router.get("/get-task/:id", verifyToken, taskController.getTaskById);
 
+/**
+ * @route GET /api/tasks/dashboard
+ * @desc Get dashboard data for the authenticated user
+ * @access Private
+ */
+router.get("/dashboard", verifyToken, taskController.getDashboard);
+
 export default router;
